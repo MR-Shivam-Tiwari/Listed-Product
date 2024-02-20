@@ -4,13 +4,14 @@ import CartItem from "./CartItem";
 
 import { Link, useNavigate } from "react-router-dom";
 import CartTotal from "./CartTotal";
+import { Modal, ModalClose, Sheet, Typography } from "@mui/joy";
 
 const Home = ({ token }) => {
   const [products, setProducts] = useState([]);
   const [activeProduct, setActiveProduct] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState([]);
-
+  const [open, setOpen] = React.useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000);
 
@@ -99,9 +100,7 @@ const Home = ({ token }) => {
             </div>
             <div>
               <button
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#exampleModal"
+                onClick={() => setOpen(true)}
                 className="rounded-2 btn bg-warning fw-bold gap-2 d-flex align-items-center "
                 style={{ width: "100px", fontSize: "20px" }}
               >
@@ -117,48 +116,60 @@ const Home = ({ token }) => {
                   <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2" />
                 </svg>
               </button>
-              <div
-                className="modal fade"
-                id="exampleModal"
-                tabindex="-1"
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
+              <Modal
+                aria-labelledby="modal-title"
+                aria-describedby="modal-desc"
+                open={open}
+                onClose={() => setOpen(false)}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <div className="modal-dialog">
-                  <div className="modal-content">
-                    <div className="modal-header">
-                      <h1
-                        className="modal-title fs-5 d-flex align-items-center gap-3"
-                        id="exampleModalLabel"
-                      >
-                        Shopping Cart
-                      </h1>
-                      <button
-                        type="button"
-                        className="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close"
-                      ></button>
+                <Sheet
+                  variant="outlined"
+                  sx={{
+                    width: 600,
+                    maxWidth: 600,
+                    borderRadius: "md",
+                    p: 3,
+                    boxShadow: "lg",
+                  }}
+                >
+                  <ModalClose variant="plain" sx={{ m: 1 }} />
+                  <h3
+                    component="h1"
+                    id="modal-title"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                    mb={1}
+                  >
+                    Shopping Cart
+                  </h3>
+                  <Typography
+                    id="modal-desc"
+                    textColor="text.tertiary"
+                    style={{ maxHeight: "400px", overflowY: "auto" }}
+                  >
+                    <div className="d-flex justify-content-center">
+                      <CartTotal cart={cart} />
                     </div>
-                    <div className="modal-body">
-                      <div className="d-flex justify-content-center">
-                        <CartTotal cart={cart} />
-                      </div>
-                      <div className="container mt-4">
-                        {cart &&
-                          cart.map((item) => (
-                            <CartItem
-                              key={item.id}
-                              item={item}
-                              removeFromCart={removeFromCart}
-                              updateQuantity={updateQuantity}
-                            />
-                          ))}
-                      </div>
+                    <div className="container mt-4">
+                      {cart &&
+                        cart.map((item) => (
+                          <CartItem
+                            key={item.id}
+                            item={item}
+                            removeFromCart={removeFromCart}
+                            updateQuantity={updateQuantity}
+                          />
+                        ))}
                     </div>
-                  </div>
-                </div>
-              </div>
+                  </Typography>
+                </Sheet>
+              </Modal>
             </div>
           </div>
         </div>
